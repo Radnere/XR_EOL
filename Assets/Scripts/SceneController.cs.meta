@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 0a12814e1703915418096014739aadc8
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _EchoBook: {fileID: 8741527866544225009, guid: 37182e074c781724cacaedbfd846e290,
+      type: 3}
+  - _findSpawnPositions: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
