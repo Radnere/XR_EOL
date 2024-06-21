@@ -38,17 +38,21 @@ public class VoskDialogText : MonoBehaviour
         {
             if (bookAppear_regex.IsMatch(p.Text))
             {
+				AddResponse("Вызываю ВСЕВЫШНЕГО,, ООО КНИГА, ПОЯВИСЬ ЖЕ! Я ВЕДАЮ!");
                 SceneController.Instance.SpawnEchoBook(); // Используем правильное имя класса
+				AddResponse("БУМ БАМ, КНИГА ПОЯВИЛАСЬ");
                 return;
             }
             if (bookDisAppear_regex.IsMatch(p.Text))
             {
+				AddResponse("ООО, БОГИ, Я УСЛШАЛ ТЕБЯ, УНИЧТОЖИМ КНИГУУУУ");
                 SceneController.Instance.DestroyEchoBook(); // Используем правильное имя класса
+				AddResponse("ООО, мы отправили молитву на исчезновение книги.");
                 return;
             }
         }
         if (result.Phrases.Length > 0 && result.Phrases[0].Text != "") {
-            AddResponse("я тебя не понимаю");
+            AddResponse("я тебя не понимаю, говори нормально, ПО РУСКИ");
         }
     }
 }
