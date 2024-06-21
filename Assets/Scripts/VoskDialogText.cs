@@ -24,7 +24,10 @@ public class VoskDialogText : MonoBehaviour
     {
         DialogText.text += response + "\n";
     }
-
+      void ClearText()
+    {
+        DialogText.text = ""; // Очистка текста
+    }
     void Say(string response)
     {
         System.Diagnostics.Process.Start("/usr/bin/say", response); 
@@ -34,6 +37,7 @@ public class VoskDialogText : MonoBehaviour
     {
         Debug.Log(obj);
         var result = new RecognitionResult(obj);
+        ClearText();
         foreach (RecognizedPhrase p in result.Phrases)
         {
             if (bookAppear_regex.IsMatch(p.Text))

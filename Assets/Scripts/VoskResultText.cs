@@ -10,11 +10,14 @@ public class VoskResultText : MonoBehaviour
     {
         VoskSpeechToText.OnTranscriptionResult += OnTranscriptionResult;
     }
-
-    private void OnTranscriptionResult(string obj)
+    void ClearText()
+    {
+        ResultText.text = ""; // Очистка текста
+    }    private void OnTranscriptionResult(string obj)
     {
         Debug.Log(obj);
         var result = new RecognitionResult(obj);
+        ClearText();
         for (int i = 0; i < result.Phrases.Length; i++)
         {
             if (i > 0)

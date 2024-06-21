@@ -53,6 +53,7 @@ public class SceneController : MonoBehaviour
         if (_currentEchoBookInstance != null)
         {
             Debug.Log("-> SceneController::DestroyEchoBook()");
+            _bookRandomSpawnerObject.SetActive(false);
             Destroy(_currentEchoBookInstance);
             _currentEchoBookInstance = null;
             Debug.Log("EchoBook has been destroyed.");
