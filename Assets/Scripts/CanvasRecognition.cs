@@ -1,53 +1,97 @@
-using Meta.XR.MRUtilityKit;
 using UnityEngine;
-using UnityEngine.UI;
-using System.Collections.Generic; // Для использования List<>
+using System.Text.RegularExpressions;
 
 public class CanvasTrigger : MonoBehaviour
 {
-    public GameObject canvas; // Ссылка на объект Canvas
-    public Transform playerCamera; // Ссылка на камеру или "голову" игрока
-    public List<Transform> activators; // Список активаторов триггера
+    public AudioSource audioSource; // Аудио источник
+    public AudioClip enterSound; // Звук при активации
+    public AudioClip exitSound; // Звук при деактивации
+    public VoskSpeechToText speechToText; // Ссылка на компонент Vosk Speech to Text
+    public VoiceProcessor voiceProcessor; // Ссылка на компонент Vosk Speech to Text
 
-    public float canvasDistance = 2.0f; // Расстояние от камеры, на котором должен появляться Canvas
-    public Vector3 canvasOffset = new Vector3(0, 0, 0); // Смещение относительно направления взгляда
+    private Regex bookAppearRegex = new Regex("add book|book plus|book one|diploma book");
+    private Regex bookDisappearRegex = new Regex("book zero|book minus|book disapear");
+    private bool isBookSpawned = false;
+    private bool _isRecognitionActive = false;
 
-        void Start()
+    private void Awake()
     {
+            speechToText.OnTranscriptionResult += HandleSpeechResult;
     }
- private void OnTriggerEnter(Collider other)
+
+    private void OnTriggerEnter(Collider other)
     {
-        foreach (var activator in activators)
+        if (IsActivatorOrChild(other.transform))
         {
-            if (other.transform == activator) // Проверяем, входит ли объект в список активаторов
-            {
-                PositionCanvasInFrontOfPlayer();
-                canvas.SetActive(true); // Активируем Canvas
-                return; // Завершаем цикл, если нашли активатор
-            }
+            audioSource.PlayOneShot(enterSound);
+            StartRecognitionComponents();
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        foreach (var activator in activators)
+        if (IsActivatorOrChild(other.transform))
         {
-            if (other.transform == activator) // Проверяем, выходит ли объект из списка активаторов
-            {
-                canvas.SetActive(false); // Деактивируем Canvas
-                return; // Завершаем цикл, если нашли активатор
-            }
+            audioSource.PlayOneShot(exitSound);
+            StopRecognitionComponents();
         }
     }
 
-    private void PositionCanvasInFrontOfPlayer()
+    private void StartRecognitionComponents()
     {
-        // Предполагаем, что камера игрока — это первый активатор в списке
-        if (activators.Count > 0 && canvas != null)
+        if (!voiceProcessor.IsRecording) // Проверяем, не запущено ли уже распознавание
         {
-            Transform playerCamera = activators[0];
-            canvas.transform.position = playerCamera.position + playerCamera.forward * canvasDistance + canvasOffset;
-            canvas.transform.rotation = Quaternion.LookRotation(canvas.transform.position - playerCamera.position);
+            speechToText.ToggleRecording();
+            _isRecognitionActive = true; // Устанавливаем флаг в true
         }
+        else
+        {
+            Debug.Log("Recognition is already active.");
+        }
+    }
+
+    private void StopRecognitionComponents()
+    {
+        if (voiceProcessor.IsRecording) // Проверяем, активно ли распознавание
+        {
+            speechToText.ToggleRecording();
+            _isRecognitionActive = false; // Устанавливаем флаг в false
+        }
+        else
+        {
+            Debug.Log("Recognition is not active.");
+        }
+    }
+
+
+    private void HandleSpeechResult(string transcription)
+    {
+        Debug.Log("Transcription: " + transcription);
+        if (bookAppearRegex.IsMatch(transcription) && !isBookSpawned)
+        {
+            SceneController.Instance.SpawnEchoBook();
+            audioSource.PlayOneShot(enterSound);
+            isBookSpawned = true;
+        }
+        else if (bookDisappearRegex.IsMatch(transcription) && isBookSpawned)
+        {
+            SceneController.Instance.DestroyEchoBook();
+            audioSource.PlayOneShot(exitSound);
+            isBookSpawned = false;
+        }
+    }
+
+    private bool IsActivatorOrChild(Transform transform)
+    {
+        Transform current = transform;
+        while (current != null)
+        {
+            if (current.CompareTag("Activator"))
+            {
+                return true;
+            }
+            current = current.parent;
+        }
+        return false;
     }
 }

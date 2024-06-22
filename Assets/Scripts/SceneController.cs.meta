@@ -4,9 +4,8 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - _EchoBook: {fileID: 8741527866544225009, guid: 37182e074c781724cacaedbfd846e290,
+  - _bookRandomSpawnerObject: {fileID: 8147609072970855555, guid: 057e0e85f29276a43824d455cd4d70ea,
       type: 3}
-  - _findSpawnPositions: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

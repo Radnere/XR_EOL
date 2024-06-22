@@ -261,8 +261,11 @@ public class VoskSpeechToText : MonoBehaviour
 		{
 			Debug.Log("Start Recording");
 			_running = true;
+			Debug.Log("Running True");
 			VoiceProcessor.StartRecording();
+			Debug.Log("Recording started");
     	                Task.Run(ThreadedWork).ConfigureAwait(false);
+			Debug.Log("Recording pass ThreadedWork");		
 		}
 		else
 		{

@@ -1,12 +1,10 @@
+using Meta.XR.MRUtilityKit;
 using UnityEngine;
 
 public class SceneController : MonoBehaviour
 {
     [SerializeField]
-    private GameObject _EchoBook;
-
-    [SerializeField]
-    private GameObject _bookRandomSpawnerObject; // Объект с компонентом BookRandomSpawner
+    private GameObject _bookRandomSpawnerObject; 
 
     private GameObject _currentEchoBookInstance;
 
@@ -27,19 +25,20 @@ public class SceneController : MonoBehaviour
 
         Debug.Log("-> SceneController::SpawnEchoBook()");
 
-        // Включаем объект с BookRandomSpawner
         if (_bookRandomSpawnerObject != null)
         {
-            _bookRandomSpawnerObject.SetActive(true);
-            // Предполагаем, что включение объекта автоматически инициирует спавн книги
-            _currentEchoBookInstance = GameObject.Find(_EchoBook.name + "(Clone)");
-            if (_currentEchoBookInstance != null)
+            _bookRandomSpawnerObject.SetActive(true); 
+
+            FindSpawnPositions spawner = _bookRandomSpawnerObject.GetComponent<FindSpawnPositions>();
+            if (spawner != null)
             {
+                spawner.StartSpawn(); 
+                _currentEchoBookInstance = spawner.SpawnObject; 
                 Debug.Log("EchoBook successfully spawned.");
             }
             else
             {
-                Debug.LogWarning("EchoBook spawn failed.");
+                Debug.LogWarning("FindSpawnPositions component is not found on the spawner object.");
             }
         }
         else
@@ -52,11 +51,12 @@ public class SceneController : MonoBehaviour
     {
         if (_currentEchoBookInstance != null)
         {
+            FindSpawnPositions spawner = _bookRandomSpawnerObject.GetComponent<FindSpawnPositions>();
             Debug.Log("-> SceneController::DestroyEchoBook()");
-            _bookRandomSpawnerObject.SetActive(false);
-            Destroy(_currentEchoBookInstance);
+            Destroy(spawner.SpawnObject);
             _currentEchoBookInstance = null;
             Debug.Log("EchoBook has been destroyed.");
+            _bookRandomSpawnerObject.SetActive(false); 
         }
         else
         {

@@ -15,9 +15,9 @@ public class VoskResultText : MonoBehaviour
         ResultText.text = ""; // Очистка текста
     }    private void OnTranscriptionResult(string obj)
     {
+        ClearText();
         Debug.Log(obj);
         var result = new RecognitionResult(obj);
-        ClearText();
         for (int i = 0; i < result.Phrases.Length; i++)
         {
             if (i > 0)
